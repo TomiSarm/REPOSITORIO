@@ -1,17 +1,17 @@
-import express from "express"
-import ProductManager from "./class/productManager.js";
-import { __dirname } from "./Utils.js";
+import express from 'express';
+import productsRouter from './routes/products.js';
+import cartsRouter from './routes/carts.js';
 
-const app = express ()
+const app = express();
+const port = 8080;
+
+// Middleware para parsear JSON
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
 
-const ProductManager = new ProductManager(__dirname + "/data/product.json")
+// Routers
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
 
-app.post("/", (req,res) => {
-
-})
-
-app.listen(8080, () => {
-    console.log("servidor ON")
-})
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
