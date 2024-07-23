@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Time Products</title>
+</head>
+<body>
+    <h1>Real Time Product List</h1>
+    <ul id="productList">
+        {{#each products}}
+        <li data-id="{{this.id}}">{{this.title}} - {{this.description}} - ${{this.price}}
+            <button onclick="deleteProduct({{this.id}})">Delete</button>
+        </li>
+        {{/each}}
+    </ul>
+    <form id="addProductForm">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="description" placeholder="Description" required>
+        <input type="text" id="code" placeholder="Code" required>
+        <input type="number" id="price" placeholder="Price" required>
+        <input type="number" id="stock" placeholder="Stock" required>
+        <input type="text" id="category" placeholder="Category" required>
+        <button type="submit">Add Product</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('productAdded', (product) => {
+            const productList = document.getElementById('productList');
+            const li = document.createElement('li');
+            li.setAttribute('data-id', product.id);
+            li.innerHTML = `${product.title} - ${product.description} - $${product.price} <button onclick="deleteProduct(${product.id})">Delete</button>`;
+            productList.appendChild(li);
+        });
+
+        socket.on('productDeleted', (product) => {
+            const productList = document.getElementById('productList');
+            const productItem = productList.querySelector(`li[data-id='${product.id}']`);
+            if (productItem) {
+                productList.removeChild(productItem);
+            }
+        });
+
+        document.getElementById('addProductForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const code = document.getElementById('code').value;
+            const price = document.getElementById('price').value;
+            const stock = document.getElementById('stock').value;
+            const category = document.getElementById('category').value;
+
+            socket.emit('createProduct', {
+                title,
+                description,
+                code,
+                price,
+                stock,
+                category
+            });
+
+            e.target.reset();
+        });
+
+        function deleteProduct(id) {
+            socket.emit('deleteProduct', id);
+        }
+
+        socket.on('connect', () => {
+            socket.on('initialize', (products) => {
+                const productList = document.getElementById('productList');
+                productList.innerHTML = '';
+                products.forEach(product => {
+                    const li = document.createElement('li');
+                    li.setAttribute('data-id', product.id);
+                    li.innerHTML = `${product.title} - ${product.description} - $${product.price} <button onclick="deleteProduct(${product.id})">Delete</button>`;
+                    productList.appendChild(li);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
