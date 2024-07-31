@@ -1,0 +1,10 @@
+{{!-- Extender el layout principal --}}
+{{#extends 'layouts/main'}}
+{{#block 'body'}}
+<h1>Product List</h1>
+<ul id="productList">
+    {{#each products}}
+    <li>{{this.title}} - {{this.description}} - ${{this.price}}</li>
+    {{/each}}
+</ul>
+{{/block}}

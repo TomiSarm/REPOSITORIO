@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import fs from 'fs';
+import path from 'path';
 
 const router = Router();
-const products = [];
 let nextId = 1;
 
-export const initializeProductRoutes = (io) => {
+const initializeProductRoutes = (io, products) => {
   // Listar todos los productos
   router.get('/', (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit) : products.length;
@@ -36,6 +37,7 @@ export const initializeProductRoutes = (io) => {
       thumbnails
     };
     products.push(newProduct);
+    fs.writeFileSync(path.join(__dirname, '..', 'data', 'products.json'), JSON.stringify(products, null, 2));
     io.emit('productAdded', newProduct);
     res.status(201).json(newProduct);
   });
@@ -45,6 +47,7 @@ export const initializeProductRoutes = (io) => {
     const product = products.find(p => p.id === parseInt(req.params.pid));
     if (product) {
       Object.assign(product, req.body);
+      fs.writeFileSync(path.join(__dirname, '..', 'data', 'products.json'), JSON.stringify(products, null, 2));
       io.emit('productUpdated', product);
       res.json(product);
     } else {
@@ -57,6 +60,7 @@ export const initializeProductRoutes = (io) => {
     const index = products.findIndex(p => p.id === parseInt(req.params.pid));
     if (index !== -1) {
       const deletedProduct = products.splice(index, 1)[0];
+      fs.writeFileSync(path.join(__dirname, '..', 'data', 'products.json'), JSON.stringify(products, null, 2));
       io.emit('productDeleted', deletedProduct);
       res.status(204).send();
     } else {
