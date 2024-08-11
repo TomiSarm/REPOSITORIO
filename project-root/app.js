@@ -7,13 +7,17 @@ import { fileURLToPath } from 'url';
 import initializeProductRoutes from './routes/products.js';
 import initializeCartRoutes from './routes/carts.js';
 import initializeViewRoutes from './routes/views.router.js';
-import fs from 'fs';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+// Configurar dotenv
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 8080;
+const port = 8081;
 
 // Configurar Handlebars
 app.engine('handlebars', engine());
@@ -30,14 +34,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 const server = createServer(app);
 const io = new Server(server);
 
-// Leer productos desde el archivo JSON
-const products = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'products.json'), 'utf-8'));
+// Conectar a MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 // Inicializar rutas con WebSocket
-app.use('/api/products', initializeProductRoutes(io, products));
+app.use('/api/products', initializeProductRoutes(io));
 app.use('/api/carts', initializeCartRoutes(io));
-app.use('/', initializeViewRoutes(io, products));
+app.use('/', initializeViewRoutes(io));
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Home' });
 });

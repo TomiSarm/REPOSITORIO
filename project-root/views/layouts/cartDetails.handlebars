@@ -1,0 +1,11 @@
+{{#extends 'layouts/main'}}
+{{#block 'body'}}
+<h1>Cart Details</h1>
+<ul>
+{{#each cart.products}}
+  <li>
+    {{this.product.title}} - Quantity: {{this.quantity}}
+  </li>
+{{/each}}
+</ul>
+{{/block}}

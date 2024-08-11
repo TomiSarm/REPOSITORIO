@@ -1,0 +1,9 @@
+{{#extends 'layouts/main'}}
+{{#block 'body'}}
+<h1>{{product.title}}</h1>
+<p>{{product.description}}</p>
+<p>Price: ${{product.price}}</p>
+<p>Category: {{product.category}}</p>
+<p>Status: {{#if product.status}}Available{{else}}Out of Stock{{/if}}</p>
+<button onclick="addToCart({{product.id}})">Add to Cart</button>
+{{/block}}
