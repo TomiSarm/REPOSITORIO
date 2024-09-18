@@ -1,10 +1,13 @@
 <h1>Product List</h1>
-<ul id="productList">
+<ul>
   {{#each products}}
   <li>
-    {{this.title}} - {{this.description}} - ${{this.price}}
-    <a href="/products/{{this.id}}">View Details</a>
-    <button onclick="addToCart({{this.id}})">Add to Cart</button>
+    <h2>{{title}}</h2> 
+    <p>{{description}}</p>
+    <p>Precio: ${{price}}</p>
+    <p>Stock disponible: {{stock}}</p>
+    <p>Categoría:{{category}}</p>
+    <button onclick="addToCart('{{_id}}')">Agregar al Carrito</button>
   </li>
   {{/each}}
 </ul>

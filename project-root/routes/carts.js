@@ -18,17 +18,48 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Listar productos en un carrito
 router.get('/:cid', async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cid).populate('products.product');
-    if (cart) {
-      res.json(cart.products);
-    } else {
-      res.status(404).send('Cart not found');
+    if (!cart) {
+      return res.status(404).send('Carrito no encontrado');
     }
+
+    // Calcular el total del carrito
+    const cartTotal = cart.products.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
+    res.render('cart', { cart, cartTotal });
   } catch (error) {
-    res.status(500).send('Error retrieving cart');
+    res.status(500).send('Error al obtener el carrito');
+  }
+});
+
+router.post('/:cid/checkout', async (req, res) => {
+  try {
+    const cart = await Cart.findById(req.params.cid).populate('products.product');
+    if (!cart) {
+      return res.status(404).send('Carrito no encontrado');
+    }
+
+    // Calcular el total
+    const total = cart.products.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+    // Crear la orden
+    const order = new Order({
+      user: req.body.userId, // Si tienes usuarios
+      products: cart.products,
+      total,
+      status: 'Completado'
+    });
+    await order.save();
+
+    // Vaciar el carrito
+    cart.products = [];
+    await cart.save();
+
+    res.status(201).json({ message: 'Compra completada', order });
+  } catch (error) {
+    res.status(500).send('Error al finalizar la compra');
   }
 });
 

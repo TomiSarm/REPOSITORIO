@@ -1,0 +1,36 @@
+<h1>Tu Carrito de Compras</h1>
+
+{{#if cart.products.length}}
+  <ul>
+    {{#each cart.products}}
+    <li>
+      {{this.product.title}} - Precio: ${{this.product.price}} - Cantidad: {{this.quantity}}
+      <button onclick="removeFromCart('{{this.product._id}}')">Eliminar</button>
+    </li>
+    {{/each}}
+  </ul>
+  <p>Total: ${{cartTotal}}</p>
+  <button onclick="checkout()">Finalizar Compra</button>
+{{else}}
+  <p>Tu carrito está vacío</p>
+{{/if}}
+
+<script>
+  function removeFromCart(productId) {
+    fetch(`/api/carts/1/products/${productId}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      alert('Producto eliminado');
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error al eliminar producto:', error);
+    });
+  }
+
+  function checkout() {
+    // Lógica para finalizar la compra (puede ser redirigir a una página de pago o generar una orden)
+    alert('Gracias por tu compra');
+  }
+</script>
