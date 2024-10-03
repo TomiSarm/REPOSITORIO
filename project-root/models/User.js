@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt'; // Necesario para el hashing de contraseñas
+import bcrypt from 'bcrypt'; 
 
 const userSchema = new mongoose.Schema({
   first_name: { type: String, required: true },
