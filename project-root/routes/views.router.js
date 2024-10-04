@@ -6,11 +6,11 @@ import Product from '../models/Product.js';
 const router = Router();
 
 const initializeViewRoutes = (io) => {
-  // Ruta para renderizar la página principal con productos desde MongoDB
+  
   router.get('/', async (req, res) => {
     try {
-      const products = await Product.find(); // Obtener los productos desde MongoDB
-      res.render('home', { products }); // Renderizar la vista con los productos
+      const products = await Product.find(); 
+      res.render('home', { products }); 
     } catch (error) {
       console.error('Error al recuperar los productos:', error);
       res.status(500).send('Error al recuperar los productos');

@@ -3,7 +3,7 @@ import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Ruta para obtener los datos del usuario logueado
+
 router.get('/current', authMiddleware, (req, res) => {
   res.json({
     first_name: req.user.first_name,

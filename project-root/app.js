@@ -24,7 +24,7 @@ const router = Router();
 const app = express();
 const port = 8081;
 
-// Configurar Handlebars
+
 app.engine('handlebars', engine({
   runtimeOptions: {
     allowProtoPropertiesByDefault: true
@@ -33,7 +33,7 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware para parsear JSON
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(session({
@@ -42,20 +42,20 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false }
 }));
-// Configurar rutas estáticas
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-import authRoutes from './routes/auth.routes.js'; // Ruta para login y registro
-import userRoutes from './routes/user.routes.js'; // Ruta para el usuario actual
+import authRoutes from './routes/auth.routes.js'; 
+import userRoutes from './routes/user.routes.js'; 
 // Configurar WebSocket
 const server = createServer(app);
 const io = new Server(server);
 
-// Conectar a MongoDB
+
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -67,8 +67,8 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/products', initializeProductRoutes(io));
 app.use('/api/carts', initializeCartRoutes(io));
 app.use('/', initializeViewRoutes(io));
-app.use('/api/auth', authRoutes); // Aquí defines las rutas de autenticación
-app.use('/api/users', passport.authenticate('jwt', { session: false }), userRoutes); // Protegiendo la ruta de usuario con Passport JWT 
+app.use('/api/auth', authRoutes); 
+app.use('/api/users', passport.authenticate('jwt', { session: false }), userRoutes); 
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -82,8 +82,8 @@ app.use((err,res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find(); // Obtener todos los productos de la base de datos
-    res.render('home', { products }); // Renderizar la vista 'home' y pasar los productos
+    const products = await Product.find(); 
+    res.render('home', { products }); 
   } catch (error) {
     res.status(500).send('Error al cargar los productos');
   }

@@ -6,7 +6,7 @@ import Product from '../models/Product.js';
 const router = Router();
 
 const initializeCartRoutes = (io) => {
-// Crear un nuevo carrito
+
 router.post('/', async (req, res) => {
   try {
     const newCart = new Cart({ products: [] });
@@ -25,7 +25,7 @@ router.get('/:cid', async (req, res) => {
       return res.status(404).send('Carrito no encontrado');
     }
 
-    // Calcular el total del carrito
+    
     const cartTotal = cart.products.reduce((total, item) => total + item.product.price * item.quantity, 0);
 
     res.render('cart', { cart, cartTotal });
@@ -41,19 +41,19 @@ router.post('/:cid/checkout', async (req, res) => {
       return res.status(404).send('Carrito no encontrado');
     }
 
-    // Calcular el total
+    
     const total = cart.products.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-    // Crear la orden
+    
     const order = new Order({
-      user: req.body.userId, // Si tienes usuarios
+      user: req.body.userId, 
       products: cart.products,
       total,
       status: 'Completado'
     });
     await order.save();
 
-    // Vaciar el carrito
+    
     cart.products = [];
     await cart.save();
 
@@ -63,7 +63,7 @@ router.post('/:cid/checkout', async (req, res) => {
   }
 });
 
-// Agregar un producto a un carrito
+
 router.post('/:cid/product/:pid', async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cid);
@@ -87,7 +87,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
   }
 });
 
-// Eliminar un producto de un carrito
+
 router.delete('/:cid/products/:pid', async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cid);
@@ -102,7 +102,7 @@ router.delete('/:cid/products/:pid', async (req, res) => {
   }
 });
 
-// Actualizar carrito
+
 router.put('/:cid', async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cid);
@@ -117,7 +117,7 @@ router.put('/:cid', async (req, res) => {
   }
 });
 
-// Actualizar cantidad de un producto en el carrito
+
 router.put('/:cid/products/:pid', async (req, res) => {
   try {
     const { quantity } = req.body;
@@ -136,7 +136,7 @@ router.put('/:cid/products/:pid', async (req, res) => {
   }
 });
 
-// Vaciar carrito
+
 router.delete('/:cid', async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cid);

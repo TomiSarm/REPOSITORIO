@@ -25,7 +25,7 @@ window.addEventListener('popstate', () => {
     root.appendChild(component());
 });
 
-// Initial load
+
 navigateTo(window.location.pathname);
 
 document.body.addEventListener('click', (e) => {

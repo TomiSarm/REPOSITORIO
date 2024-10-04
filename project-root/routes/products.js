@@ -6,14 +6,13 @@ import Product from '../models/Product.js';
 const router = Router();
 
 const initializeProductRoutes = (io) => {
-// Listar todos los productos
-// Listar productos con paginación, filtros y ordenamiento
+
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find(); // Consulta básica sin filtros
-    console.log(products); // Verifica si los productos están siendo obtenidos correctamente
+    const products = await Product.find(); 
+    console.log(products); 
 
-    res.render('home', { products }); // Pasar los productos a la vista
+    res.render('home', { products }); 
   } catch (error) {
     console.error('Error retrieving products:', error);
     res.status(500).send('Error retrieving products');
@@ -26,9 +25,9 @@ router.get('/', async (req, res) => {
 
     let sortOption = {};
     if (sort === 'asc') {
-      sortOption = { price: 1 };  // Ordenar por precio ascendente
+      sortOption = { price: 1 };  
     } else if (sort === 'desc') {
-      sortOption = { price: -1 }; // Ordenar por precio descendente
+      sortOption = { price: -1 }; 
     }
 
     const queryOptions = query ? { $or: [{ category: query }, { status: query === 'true' }] } : {};
@@ -58,7 +57,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Actualizar un producto
+
 router.put('/:pid', (req, res) => {
 const product = product.find(p => p.id === parseInt(req.params.pid));
 if (product) {
@@ -71,7 +70,7 @@ res.status(404).send('Product not found');
 }
 });
 
-// Eliminar un producto
+
 router.delete('/:pid', (req, res) => {
 const index = Product.findIndex(p => p.id === parseInt(req.params.pid));
 if (index !== -1) {
